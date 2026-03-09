@@ -68,13 +68,16 @@ export async function fetchContent(
 }
 
 function extensionOf(path: string): string {
-  const dot = path.lastIndexOf(".");
-  if (dot === -1 || dot === path.lastIndexOf("/")) return "";
-  return path.slice(dot + 1);
+  const slash = path.lastIndexOf("/");
+  const filename = path.slice(slash + 1);
+  const dot = filename.lastIndexOf(".");
+  // dot <= 0 covers no-extension files and dot-files like .gitignore
+  if (dot <= 0) return "";
+  return filename.slice(dot + 1);
 }
 
 function decodeBase64(b64: string): string {
-  // GitHub API inserts newlines every 60 chars — strip them before decoding
+  // GitHub API inserts line breaks in the base64 payload — strip all whitespace before decoding
   const clean = b64.replace(/\s/g, "");
   const bytes = Uint8Array.from(atob(clean), (c) => c.charCodeAt(0));
   // fatal: true throws on invalid UTF-8 sequences (e.g. binary files)
