@@ -36,7 +36,12 @@ export async function fetchContent(
   };
 
   if (data.encoding !== "base64") {
-    return binaryResult;
+    // GitHub API returns encoding "" with empty content for files > 1 MB.
+    // These are not binary — they are simply too large to serve via this endpoint.
+    // Throw so processAnchor leaves the original link intact.
+    throw new Error(
+      `Unsupported encoding "${data.encoding}" — file may exceed the API size limit`
+    );
   }
 
   let decoded: string;

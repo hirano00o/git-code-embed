@@ -84,18 +84,15 @@ describe("fetchContent", () => {
     expect(result.lineEnd).toBe(3);
   });
 
-  it("marks the result as binary when encoding is not base64", async () => {
+  it("throws when encoding is not base64 (e.g. file exceeds API size limit)", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response(
-        JSON.stringify({ content: "", encoding: "none" }),
+        JSON.stringify({ content: "", encoding: "" }),
         { status: 200 }
       )
     );
 
-    const result = await fetchContent(base);
-
-    expect(result.isBinary).toBe(true);
-    expect(result.lines).toEqual([]);
+    await expect(fetchContent(base)).rejects.toThrow(/Unsupported encoding/);
   });
 
   it("marks the result as binary when base64 content cannot be decoded as UTF-8", async () => {
