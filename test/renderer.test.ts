@@ -1,0 +1,223 @@
+import { describe, it, expect, beforeEach } from "vitest";
+import { renderEmbed } from "../src/renderer";
+import type { FetchedContent, ParsedGitHubUrl } from "../src/types";
+
+function makeParsed(overrides?: Partial<ParsedGitHubUrl>): ParsedGitHubUrl {
+  return {
+    owner: "owner",
+    repo: "repo",
+    ref: "main",
+    path: "src/index.ts",
+    ...overrides,
+  };
+}
+
+function makeContent(overrides?: Partial<FetchedContent>): FetchedContent {
+  return {
+    lines: ["const x = 1;", "const y = 2;"],
+    lineStart: 1,
+    lineEnd: 2,
+    totalLines: 2,
+    extension: "ts",
+    isBinary: false,
+    ...overrides,
+  };
+}
+
+function makeAnchor(href: string): HTMLAnchorElement {
+  const a = document.createElement("a");
+  a.href = href;
+  a.textContent = href;
+  document.body.appendChild(a);
+  return a;
+}
+
+beforeEach(() => {
+  document.body.innerHTML = "";
+});
+
+describe("renderEmbed", () => {
+  describe("header", () => {
+    it("renders the GitHub icon in the header", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent(),
+        anchor,
+      });
+
+      const container = document.querySelector(".gce-container");
+      expect(container).not.toBeNull();
+      const icon = container!.querySelector(".gce-header-icon svg");
+      expect(icon).not.toBeNull();
+    });
+
+    it("renders a link with owner/repo/path text", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent(),
+        anchor,
+      });
+
+      const title = document.querySelector(".gce-header-title");
+      expect(title).not.toBeNull();
+      expect(title!.textContent).toContain("owner/repo");
+      expect(title!.textContent).toContain("src/index.ts");
+
+      const link = title!.querySelector("a");
+      expect(link).not.toBeNull();
+      expect(link!.href).toContain("github.com/owner/repo/blob/main/src/index.ts");
+    });
+
+    it("renders 'Lines {start} to {end} in {ref}' in meta", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts#L5-L10"
+      );
+      renderEmbed({
+        parsed: makeParsed({ lineStart: 5, lineEnd: 10 }),
+        content: makeContent({ lineStart: 5, lineEnd: 10, totalLines: 20 }),
+        anchor,
+      });
+
+      const meta = document.querySelector(".gce-header-meta");
+      expect(meta!.textContent).toContain("Lines 5 to 10");
+      expect(meta!.textContent).toContain("main");
+    });
+
+    it("renders 'Lines 1 to {total} in {ref}' when no line range given", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent({ lineStart: 1, lineEnd: 2, totalLines: 2 }),
+        anchor,
+      });
+
+      const meta = document.querySelector(".gce-header-meta");
+      expect(meta!.textContent).toContain("Lines 1 to 2");
+    });
+  });
+
+  describe("code area", () => {
+    it("renders a row for each line", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent({
+          lines: ["a", "b", "c"],
+          lineStart: 1,
+          lineEnd: 3,
+          totalLines: 3,
+        }),
+        anchor,
+      });
+
+      const rows = document.querySelectorAll(".gce-table tr");
+      expect(rows.length).toBe(3);
+    });
+
+    it("renders line numbers starting from lineStart", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts#L10-L12"
+      );
+      renderEmbed({
+        parsed: makeParsed({ lineStart: 10, lineEnd: 12 }),
+        content: makeContent({
+          lines: ["x", "y", "z"],
+          lineStart: 10,
+          lineEnd: 12,
+          totalLines: 20,
+        }),
+        anchor,
+      });
+
+      const lineNos = document.querySelectorAll(".gce-lineno");
+      expect(lineNos[0]!.textContent?.trim()).toBe("10");
+      expect(lineNos[1]!.textContent?.trim()).toBe("11");
+      expect(lineNos[2]!.textContent?.trim()).toBe("12");
+    });
+
+    it("applies max-height for scroll via gce-code-wrap class", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent(),
+        anchor,
+      });
+
+      const wrap = document.querySelector(".gce-code-wrap");
+      expect(wrap).not.toBeNull();
+    });
+  });
+
+  describe("binary file", () => {
+    it("renders 'No line' in meta for binary files", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/image.png"
+      );
+      renderEmbed({
+        parsed: makeParsed({ path: "image.png" }),
+        content: makeContent({
+          isBinary: true,
+          lines: [],
+          lineStart: 1,
+          lineEnd: 0,
+          totalLines: 0,
+        }),
+        anchor,
+      });
+
+      const meta = document.querySelector(".gce-header-meta");
+      expect(meta!.textContent).toContain("No line");
+    });
+
+    it("renders a 'view on GitHub' link for binary files instead of code", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/image.png"
+      );
+      renderEmbed({
+        parsed: makeParsed({ path: "image.png" }),
+        content: makeContent({
+          isBinary: true,
+          lines: [],
+          lineStart: 1,
+          lineEnd: 0,
+          totalLines: 0,
+        }),
+        anchor,
+      });
+
+      const noContent = document.querySelector(".gce-no-content");
+      expect(noContent).not.toBeNull();
+      const link = noContent!.querySelector("a");
+      expect(link).not.toBeNull();
+      expect(link!.href).toContain("github.com");
+    });
+  });
+
+  describe("DOM replacement", () => {
+    it("replaces the anchor element with the container", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/src/index.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed(),
+        content: makeContent(),
+        anchor,
+      });
+
+      expect(document.contains(anchor)).toBe(false);
+      expect(document.querySelector(".gce-container")).not.toBeNull();
+    });
+  });
+});
