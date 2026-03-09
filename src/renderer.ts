@@ -128,6 +128,12 @@ function splitHighlightedLines(html: string, lineCount: number): string[] {
   const lines: string[] = [];
   const rawLines = html.split("\n");
 
+  if (rawLines.length !== lineCount) {
+    console.warn(
+      `[git-code-embed] highlight line count mismatch: expected ${lineCount}, got ${rawLines.length}`
+    );
+  }
+
   // Matches open and close span tags in source order
   const tokenRe = /(<span[^>]*>)|(<\/span>)/g;
 

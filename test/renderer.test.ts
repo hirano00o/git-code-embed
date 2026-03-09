@@ -265,6 +265,17 @@ describe("renderEmbed", () => {
       expect(result[0]).toBe('<span class="hljs-keyword">const</span> x = 1;');
       expect(result[1]).toBe('<span class="hljs-keyword">const</span> y = 2;');
     });
+
+    it("falls back to empty string when rawLines is shorter than lineCount", () => {
+      // Only one \n-delimited line in HTML but lineCount says 2
+      const html = '<span class="hljs-keyword">only one line</span>';
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const result = splitHighlightedLinesForTest(html, 2);
+      warnSpy.mockRestore();
+
+      expect(result[0]).toBe('<span class="hljs-keyword">only one line</span>');
+      expect(result[1]).toBe(""); // ?? "" fallback, no unclosed tags
+    });
   });
 
   describe("DOM replacement", () => {
