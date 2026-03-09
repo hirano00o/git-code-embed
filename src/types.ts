@@ -6,7 +6,7 @@ export interface ParsedGitHubUrl {
   path: string;
   /** 1-based start line, undefined if not specified */
   lineStart?: number;
-  /** 1-based end line, undefined if not specified */
+  /** 1-based end line, undefined if not specified. When only lineStart is given, equals lineStart. */
   lineEnd?: number;
 }
 
