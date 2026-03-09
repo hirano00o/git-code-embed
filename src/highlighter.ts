@@ -94,8 +94,10 @@ const EXT_TO_LANG: Record<string, string> = {
 
 /**
  * Highlights source code using highlight.js.
- * Returns an HTML string with highlight.js class annotations.
- * Falls back to plain text when the language is unknown.
+ *
+ * @returns An HTML string safe for assignment to `innerHTML`.
+ *   All characters from the source code are HTML-entity-escaped by
+ *   highlight.js before being returned — no raw user input appears in the output.
  */
 export function highlight(code: string, extension: string): string {
   const lang = EXT_TO_LANG[extension.toLowerCase()];
