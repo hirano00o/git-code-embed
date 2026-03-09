@@ -266,6 +266,17 @@ describe("renderEmbed", () => {
       expect(result[1]).toBe('<span class="hljs-keyword">const</span> y = 2;');
     });
 
+    it("closes multiple inherited spans simultaneously on the next line", () => {
+      // Two spans open on line 1 and both close at the start of line 2.
+      // Both inherited tags must be re-opened as prefix and then closed by the rawLine.
+      const html = '<span class="a"><span class="b">line1\n</span></span>line2';
+      const result = splitHighlightedLinesForTest(html, 2);
+
+      expect(result[0]).toBe('<span class="a"><span class="b">line1</span></span>');
+      // prefix re-opens both spans; rawLine closes them in order
+      expect(result[1]).toBe('<span class="a"><span class="b"></span></span>line2');
+    });
+
     it("falls back to empty string when rawLines is shorter than lineCount", () => {
       // Only one \n-delimited line in HTML but lineCount says 2
       const html = '<span class="hljs-keyword">only one line</span>';
