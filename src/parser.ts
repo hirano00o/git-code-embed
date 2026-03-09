@@ -21,6 +21,11 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
         ? lineStart
         : undefined;
 
+  // Reject non-positive line numbers or reversed ranges
+  if (lineStart !== undefined && lineStart < 1) return null;
+  if (lineEnd !== undefined && lineEnd < 1) return null;
+  if (lineStart !== undefined && lineEnd !== undefined && lineEnd < lineStart) return null;
+
   return {
     owner: owner!,
     repo: repo!,

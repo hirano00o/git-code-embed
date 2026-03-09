@@ -118,5 +118,17 @@ describe("parseGitHubUrl", () => {
         parseGitHubUrl("https://github.com/owner/repo/pull/123")
       ).toBeNull();
     });
+
+    it("returns null when lineEnd is less than lineStart", () => {
+      expect(
+        parseGitHubUrl("https://github.com/owner/repo/blob/main/file.ts#L10-L5")
+      ).toBeNull();
+    });
+
+    it("returns null when lineStart is zero", () => {
+      expect(
+        parseGitHubUrl("https://github.com/owner/repo/blob/main/file.ts#L0")
+      ).toBeNull();
+    });
   });
 });
