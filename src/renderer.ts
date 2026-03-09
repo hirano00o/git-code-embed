@@ -15,7 +15,8 @@ export function renderEmbed({ parsed, content, anchor }: RenderOptions): void {
   const { lines, lineStart, lineEnd, totalLines, extension, isBinary } =
     content;
 
-  const fileUrl = `https://github.com/${owner}/${repo}/blob/${ref}/${path}`;
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  const fileUrl = `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/blob/${encodeURIComponent(ref)}/${encodedPath}`;
 
   // --- Container ---
   const container = document.createElement("div");
