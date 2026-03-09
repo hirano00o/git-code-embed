@@ -31,7 +31,7 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
     repo: repo!,
     ref: ref!,
     path: path!,
-    lineStart,
-    lineEnd,
+    ...(lineStart !== undefined && { lineStart }),
+    ...(lineEnd !== undefined && { lineEnd }),
   };
 }

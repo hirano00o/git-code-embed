@@ -110,5 +110,15 @@ export function highlight(code: string, extension: string): string {
   }
   // Unknown extensions get no highlighting rather than running highlightAuto,
   // which tries every registered language and is expensive for large files.
-  return hljs.escapeHTML(code);
+  return escapeHTML(code);
+}
+
+/** Escapes the five HTML special characters so the output is safe for innerHTML. */
+function escapeHTML(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
