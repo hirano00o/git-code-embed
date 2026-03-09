@@ -7,13 +7,11 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/owner/repo/blob/main/src/index.ts"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "owner",
         repo: "repo",
         ref: "main",
         path: "src/index.ts",
-        lineStart: undefined,
-        lineEnd: undefined,
       });
     });
 
@@ -49,13 +47,11 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/owner/repo/blob/abc1234/README.md"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "owner",
         repo: "repo",
         ref: "abc1234",
         path: "README.md",
-        lineStart: undefined,
-        lineEnd: undefined,
       });
     });
 
@@ -63,13 +59,11 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/org/project/blob/v1.0.0/src/utils/helper.ts"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "org",
         repo: "project",
         ref: "v1.0.0",
         path: "src/utils/helper.ts",
-        lineStart: undefined,
-        lineEnd: undefined,
       });
     });
 
