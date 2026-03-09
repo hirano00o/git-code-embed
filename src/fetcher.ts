@@ -13,7 +13,8 @@ export async function fetchContent(
   parsed: ParsedGitHubUrl
 ): Promise<FetchedContent> {
   const { owner, repo, ref, path, lineStart, lineEnd } = parsed;
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${ref}`;
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  const url = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}?ref=${encodeURIComponent(ref)}`;
 
   const response = await fetch(url, {
     headers: { Accept: "application/vnd.github.v3+json" },
