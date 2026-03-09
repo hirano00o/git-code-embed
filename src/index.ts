@@ -4,7 +4,9 @@ import { fetchContent } from "./fetcher";
 import { renderEmbed } from "./renderer";
 
 function injectStyles(): void {
+  if (document.querySelector("style[data-gce]")) return;
   const style = document.createElement("style");
+  style.setAttribute("data-gce", "");
   style.textContent = CSS;
   document.head.appendChild(style);
 }

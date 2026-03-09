@@ -43,6 +43,13 @@ describe("index", () => {
     expect(style).not.toBeNull();
   });
 
+  it("injects only one <style> tag even when init() is called multiple times", async () => {
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+    await init();
+    await init();
+    expect(document.querySelectorAll("style[data-gce]")).toHaveLength(1);
+  });
+
   it("detects a GitHub blob anchor and calls fetchContent", async () => {
     const a = document.createElement("a");
     a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
