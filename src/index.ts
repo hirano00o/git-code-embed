@@ -11,10 +11,12 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-async function processAnchor(anchor: HTMLAnchorElement): Promise<void> {
-  const parsed = parseGitHubUrl(anchor.href);
-  if (!parsed) return;
+import type { ParsedGitHubUrl } from "./types";
 
+async function processAnchor(
+  anchor: HTMLAnchorElement,
+  parsed: ParsedGitHubUrl
+): Promise<void> {
   try {
     const content = await fetchContent(parsed);
     renderEmbed({ parsed, content, anchor });
@@ -30,10 +32,15 @@ export function init(): Promise<void> {
   const anchors = Array.from(
     document.querySelectorAll<HTMLAnchorElement>("a[href]")
   );
-  const githubAnchors = anchors.filter((a) => parseGitHubUrl(a.href) !== null);
+  const githubAnchors = anchors.flatMap((a) => {
+    const parsed = parseGitHubUrl(a.href);
+    return parsed ? [{ anchor: a, parsed }] : [];
+  });
 
   // Process all anchors concurrently
-  return Promise.all(githubAnchors.map(processAnchor)).then(() => undefined);
+  return Promise.all(
+    githubAnchors.map(({ anchor, parsed }) => processAnchor(anchor, parsed))
+  ).then(() => undefined);
 }
 
 if (document.readyState === "loading") {
