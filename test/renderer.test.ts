@@ -244,6 +244,18 @@ describe("renderEmbed", () => {
       expect(result[2]).toBe('<span class="a">line3</span>');
     });
 
+    it("correctly handles close-then-open at line start with inherited open span", () => {
+      // Inherited span 'a' closes at the start of line 2, new span 'b' opens on line 2.
+      // The close must consume the inherited tag (popped from inheritedTags), not 'b'.
+      // prefix re-opens 'a' so the rawLine </span> properly closes it in the output.
+      const html = '<span class="a">line1\n</span><span class="b">line2</span>';
+      const result = splitHighlightedLinesForTest(html, 2);
+
+      expect(result[0]).toBe('<span class="a">line1</span>');
+      // prefix adds '<span class="a">', rawLine closes it, then 'b' opens and closes
+      expect(result[1]).toBe('<span class="a"></span><span class="b">line2</span>');
+    });
+
     it("returns lines unchanged when no spans cross boundaries", () => {
       const html =
         '<span class="hljs-keyword">const</span> x = 1;\n' +

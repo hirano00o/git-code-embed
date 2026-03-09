@@ -128,8 +128,8 @@ function splitHighlightedLines(html: string, lineCount: number): string[] {
   const lines: string[] = [];
   const rawLines = html.split("\n");
 
-  const openTagRe = /<span[^>]*>/g;
-  const closeTagRe = /<\/span>/g;
+  // Matches open and close span tags in source order
+  const tokenRe = /(<span[^>]*>)|(<\/span>)/g;
 
   // Tags opened in previous lines that are still unclosed at the current line boundary
   let inheritedTags: string[] = [];
@@ -138,17 +138,27 @@ function splitHighlightedLines(html: string, lineCount: number): string[] {
     const rawLine = rawLines[i] ?? "";
     const prefix = inheritedTags.join("");
 
-    const opens = [...rawLine.matchAll(openTagRe)].map((m) => m[0]!);
-    const closeCount = [...rawLine.matchAll(closeTagRe)].length;
+    // Walk open/close tokens in source order to track the running stack for this line.
+    // Closing tags pop from lineStack first; only when lineStack is empty do they
+    // consume an inherited tag. This correctly handles patterns like </span><span>
+    // where the close belongs to an inherited tag and the open starts a new one.
+    const lineStack: string[] = [];
+    let token: RegExpExecArray | null;
+    tokenRe.lastIndex = 0;
+    while ((token = tokenRe.exec(rawLine)) !== null) {
+      if (token[1] !== undefined) {
+        lineStack.push(token[1]);
+      } else {
+        if (lineStack.length > 0) {
+          lineStack.pop();
+        } else {
+          inheritedTags.pop();
+        }
+      }
+    }
 
-    // How many closes in this line consume tags opened in previous lines
-    const closesFromInherited = Math.max(0, closeCount - opens.length);
-    // Net unclosed tags opened in this line that carry over to the next
-    const netNewUnclosed = Math.max(0, opens.length - closeCount);
-
-    inheritedTags.splice(inheritedTags.length - closesFromInherited, closesFromInherited);
-    const nextInherited = [...inheritedTags, ...opens.slice(0, netNewUnclosed)];
-
+    // lineStack holds tags opened in this line that were not closed in this line
+    const nextInherited = [...inheritedTags, ...lineStack];
     const suffix = "</span>".repeat(nextInherited.length);
     lines.push(prefix + rawLine + suffix);
 
