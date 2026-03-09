@@ -19,7 +19,7 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/owner/repo/blob/main/src/index.ts#L10"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "owner",
         repo: "repo",
         ref: "main",
@@ -33,7 +33,7 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/owner/repo/blob/main/src/index.ts#L10-L30"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "owner",
         repo: "repo",
         ref: "main",
@@ -71,7 +71,7 @@ describe("parseGitHubUrl", () => {
       const result = parseGitHubUrl(
         "https://github.com/owner/repo/blob/main/file.ts#L5-L5"
       );
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         owner: "owner",
         repo: "repo",
         ref: "main",
