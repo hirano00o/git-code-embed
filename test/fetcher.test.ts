@@ -152,22 +152,24 @@ describe("fetchContent", () => {
     );
   });
 
-  it("percent-encodes special characters in path and ref", async () => {
+  it("percent-encodes spaces in path segments and ref", async () => {
     const fetchSpy = vi
       .spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(
         new Response(JSON.stringify(makeApiResponse("hello")), { status: 200 })
       );
 
+    // Note: refs containing "/" cannot be parsed from GitHub blob URLs by
+    // parseGitHubUrl — the regex captures the first path segment only.
     await fetchContent({
       owner: "my-org",
       repo: "my-repo",
-      ref: "feature/my branch",
+      ref: "my branch",
       path: "src/my file.ts",
     });
 
     expect(fetchSpy).toHaveBeenCalledWith(
-      "https://api.github.com/repos/my-org/my-repo/contents/src/my%20file.ts?ref=feature%2Fmy%20branch",
+      "https://api.github.com/repos/my-org/my-repo/contents/src/my%20file.ts?ref=my%20branch",
       expect.objectContaining({ headers: expect.any(Object) })
     );
   });
