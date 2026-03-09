@@ -39,6 +39,20 @@ describe("fetchContent", () => {
     expect(result.extension).toBe("ts");
   });
 
+  it("returns empty lines and lineEnd=0 for an empty file", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify(makeApiResponse("")), { status: 200 })
+    );
+
+    const result = await fetchContent(base);
+
+    expect(result.isBinary).toBe(false);
+    expect(result.lines).toEqual([]);
+    expect(result.totalLines).toBe(0);
+    expect(result.lineStart).toBe(1);
+    expect(result.lineEnd).toBe(0);
+  });
+
   it("slices to the requested line range", async () => {
     const raw = Array.from({ length: 10 }, (_, i) => `line${i + 1}`).join(
       "\n"

@@ -89,6 +89,20 @@ describe("renderEmbed", () => {
       expect(meta!.textContent).toContain("main");
     });
 
+    it("renders 'Empty file' in meta for an empty file", () => {
+      const anchor = makeAnchor(
+        "https://github.com/owner/repo/blob/main/empty.ts"
+      );
+      renderEmbed({
+        parsed: makeParsed({ path: "empty.ts" }),
+        content: makeContent({ lines: [], lineStart: 1, lineEnd: 0, totalLines: 0 }),
+        anchor,
+      });
+
+      const meta = document.querySelector(".gce-header-meta");
+      expect(meta!.textContent).toBe("Empty file");
+    });
+
     it("renders 'Lines 1 to {total} in {ref}' when no line range given", () => {
       const anchor = makeAnchor(
         "https://github.com/owner/repo/blob/main/src/index.ts"

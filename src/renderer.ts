@@ -51,9 +51,10 @@ export function renderEmbed({ parsed, content, anchor }: RenderOptions): void {
   metaEl.className = "gce-header-meta";
   if (isBinary) {
     metaEl.textContent = "No line";
+  } else if (totalLines === 0) {
+    metaEl.textContent = "Empty file";
   } else {
-    const displayEnd = lineEnd !== 0 ? lineEnd : totalLines;
-    metaEl.textContent = `Lines ${lineStart} to ${displayEnd} in ${ref}`;
+    metaEl.textContent = `Lines ${lineStart} to ${lineEnd} in ${ref}`;
   }
   info.appendChild(metaEl);
 
