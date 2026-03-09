@@ -76,5 +76,7 @@ function extensionOf(path: string): string {
 function decodeBase64(b64: string): string {
   // GitHub API inserts newlines every 60 chars — strip them before decoding
   const clean = b64.replace(/\s/g, "");
-  return decodeURIComponent(escape(atob(clean)));
+  const bytes = Uint8Array.from(atob(clean), (c) => c.charCodeAt(0));
+  // fatal: true throws on invalid UTF-8 sequences (e.g. binary files)
+  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
 }
