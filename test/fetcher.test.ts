@@ -44,6 +44,18 @@ describe("fetchContent", () => {
     expect(result.extension).toBe("ts");
   });
 
+  it("strips \\r from CRLF line endings", async () => {
+    const raw = "line1\r\nline2\r\nline3\r\n";
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify(makeApiResponse(raw)), { status: 200 })
+    );
+
+    const result = await fetchContent(base);
+
+    expect(result.lines).toEqual(["line1", "line2", "line3"]);
+    expect(result.totalLines).toBe(3);
+  });
+
   it("returns empty lines and lineEnd=0 for an empty file", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response(JSON.stringify(makeApiResponse("")), { status: 200 })

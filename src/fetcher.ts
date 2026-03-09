@@ -52,8 +52,9 @@ export async function fetchContent(
     // decoded as UTF-8 text, so we treat them as binary.
     return binaryResult;
   }
-  // Split on newlines; trim trailing empty line from trailing newline
-  const allLines = decoded.split("\n");
+  // Split on newlines; handle both LF and CRLF (Windows) line endings.
+  // Trim the trailing empty entry that split() produces for a trailing newline.
+  const allLines = decoded.split(/\r?\n/);
   if (allLines.at(-1) === "") allLines.pop();
 
   const totalLines = allLines.length;
