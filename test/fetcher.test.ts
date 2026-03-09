@@ -9,12 +9,14 @@ const base: ParsedGitHubUrl = {
   path: "src/index.ts",
 };
 
-/** Encode text to base64 the same way the GitHub API does */
+/** Encode text to base64 the same way the GitHub API does (76-char line wrapping) */
 function toBase64(text: string): string {
   const bytes = new TextEncoder().encode(text);
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary);
+  const b64 = btoa(binary);
+  // GitHub API wraps base64 output at 76 characters with "\n"
+  return b64.replace(/(.{76})/g, "$1\n");
 }
 
 function makeApiResponse(content: string, encoding = "base64") {
