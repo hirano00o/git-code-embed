@@ -80,7 +80,7 @@ function extensionOf(path: string): string {
   const dot = filename.lastIndexOf(".");
   // dot <= 0 covers no-extension files and dot-files like .gitignore
   if (dot <= 0) return "";
-  return filename.slice(dot + 1);
+  return filename.slice(dot + 1).toLowerCase();
 }
 
 function decodeBase64(b64: string): string {

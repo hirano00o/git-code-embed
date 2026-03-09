@@ -20,7 +20,7 @@ export interface FetchedContent {
   lineEnd: number;
   /** Total lines in the full file */
   totalLines: number;
-  /** File extension used for language detection (e.g. "ts", "py") */
+  /** File extension used for language detection (e.g. "ts", "py"), always lowercase */
   extension: string;
   /** True when the file is binary/non-text and cannot be displayed */
   isBinary: boolean;
