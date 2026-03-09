@@ -50,6 +50,32 @@ describe("index", () => {
     expect(document.querySelectorAll("style[data-gce]")).toHaveLength(1);
   });
 
+  it("does not re-process links inside already-rendered gce-containers", async () => {
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    document.body.appendChild(a);
+
+    // Simulate renderEmbed replacing the anchor with a gce-container that has
+    // an internal blob link (the header title link).
+    mockRenderEmbed.mockImplementation(({ anchor }) => {
+      const container = document.createElement("div");
+      container.className = "gce-container";
+      const innerLink = document.createElement("a");
+      innerLink.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+      container.appendChild(innerLink);
+      anchor.parentNode!.replaceChild(container, anchor);
+    });
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+    expect(mockFetchContent).toHaveBeenCalledTimes(1);
+
+    // Second call: the internal link must not trigger another fetch.
+    mockFetchContent.mockClear();
+    await init();
+    expect(mockFetchContent).not.toHaveBeenCalled();
+  });
+
   it("detects a GitHub blob anchor and calls fetchContent", async () => {
     const a = document.createElement("a");
     a.href = "https://github.com/owner/repo/blob/main/src/index.ts";

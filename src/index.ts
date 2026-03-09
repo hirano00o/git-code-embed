@@ -28,8 +28,10 @@ async function processAnchor(
 export function init(): Promise<void> {
   injectStyles();
 
+  // Exclude links inside already-rendered containers to prevent re-processing
+  // when init() is called more than once (e.g., after dynamic content insertion).
   const anchors = Array.from(
-    document.querySelectorAll<HTMLAnchorElement>("a[href]")
+    document.querySelectorAll<HTMLAnchorElement>("a[href]:not(.gce-container a)")
   );
   const githubAnchors = anchors.flatMap((a) => {
     const parsed = parseGitHubUrl(a.href);
