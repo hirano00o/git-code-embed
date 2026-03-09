@@ -70,6 +70,20 @@ describe("fetchContent", () => {
     expect(result.lineEnd).toBe(0);
   });
 
+  it("returns lines from lineStart to end of file when only lineStart is given", async () => {
+    const raw = Array.from({ length: 5 }, (_, i) => `line${i + 1}`).join("\n");
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify(makeApiResponse(raw)), { status: 200 })
+    );
+
+    const result = await fetchContent({ ...base, lineStart: 3 });
+
+    expect(result.lines).toEqual(["line3", "line4", "line5"]);
+    expect(result.lineStart).toBe(3);
+    expect(result.lineEnd).toBe(5);
+    expect(result.totalLines).toBe(5);
+  });
+
   it("slices to the requested line range", async () => {
     const raw = Array.from({ length: 10 }, (_, i) => `line${i + 1}`).join(
       "\n"
