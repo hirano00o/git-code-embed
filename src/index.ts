@@ -42,8 +42,3 @@ export function init(): Promise<void> {
   ).then(() => undefined);
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => void init());
-} else {
-  void init();
-}
