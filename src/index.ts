@@ -1,3 +1,4 @@
+import type { ParsedGitHubUrl } from "./types";
 import { CSS } from "./styles";
 import { parseGitHubUrl } from "./parser";
 import { fetchContent } from "./fetcher";
@@ -10,8 +11,6 @@ function injectStyles(): void {
   style.textContent = CSS;
   document.head.appendChild(style);
 }
-
-import type { ParsedGitHubUrl } from "./types";
 
 async function processAnchor(
   anchor: HTMLAnchorElement,

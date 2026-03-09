@@ -11,7 +11,10 @@ const base: ParsedGitHubUrl = {
 
 /** Encode text to base64 the same way the GitHub API does */
 function toBase64(text: string): string {
-  return btoa(unescape(encodeURIComponent(text)));
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
 }
 
 function makeApiResponse(content: string, encoding = "base64") {
