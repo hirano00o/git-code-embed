@@ -113,6 +113,9 @@ export function renderEmbed({ parsed, content, anchor }: RenderOptions): void {
   anchor.parentNode?.replaceChild(container, anchor);
 }
 
+/** Exported only for unit testing — not part of the public API. */
+export { splitHighlightedLines as splitHighlightedLinesForTest };
+
 /**
  * Splits a single highlight.js HTML output string into per-line fragments.
  * highlight.js may wrap span tokens across lines, so we track unclosed tags
@@ -127,22 +130,28 @@ function splitHighlightedLines(html: string, lineCount: number): string[] {
   const openTagRe = /<span[^>]*>/g;
   const closeTagRe = /<\/span>/g;
 
-  let openTags: string[] = [];
+  // Tags opened in previous lines that are still unclosed at the current line boundary
+  let inheritedTags: string[] = [];
 
   for (let i = 0; i < lineCount; i++) {
     const rawLine = rawLines[i] ?? "";
-    const prefix = openTags.join("");
-    const lineHtml = prefix + rawLine;
+    const prefix = inheritedTags.join("");
 
     const opens = [...rawLine.matchAll(openTagRe)].map((m) => m[0]!);
     const closeCount = [...rawLine.matchAll(closeTagRe)].length;
 
-    openTags = [...openTags, ...opens];
-    const toClose = Math.min(closeCount, openTags.length);
-    openTags.splice(openTags.length - toClose, toClose);
+    // How many closes in this line consume tags opened in previous lines
+    const closesFromInherited = Math.max(0, closeCount - opens.length);
+    // Net unclosed tags opened in this line that carry over to the next
+    const netNewUnclosed = Math.max(0, opens.length - closeCount);
 
-    const suffix = "</span>".repeat(openTags.length);
-    lines.push(lineHtml + suffix);
+    inheritedTags.splice(inheritedTags.length - closesFromInherited, closesFromInherited);
+    const nextInherited = [...inheritedTags, ...opens.slice(0, netNewUnclosed)];
+
+    const suffix = "</span>".repeat(nextInherited.length);
+    lines.push(prefix + rawLine + suffix);
+
+    inheritedTags = nextInherited;
   }
 
   return lines;

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { renderEmbed } from "../src/renderer";
+import { renderEmbed, splitHighlightedLinesForTest } from "../src/renderer";
 import type { FetchedContent, ParsedGitHubUrl } from "../src/types";
 
 function makeParsed(overrides?: Partial<ParsedGitHubUrl>): ParsedGitHubUrl {
@@ -202,6 +202,42 @@ describe("renderEmbed", () => {
       const link = noContent!.querySelector("a");
       expect(link).not.toBeNull();
       expect(link!.href).toContain("github.com");
+    });
+  });
+
+  describe("splitHighlightedLinesForTest", () => {
+    it("closes inherited open tags at each line boundary", () => {
+      // Simulates highlight.js output where a span opens on line 1 and
+      // closes on line 2, crossing the line boundary.
+      const html = '<span class="hljs-keyword">foo\nbar</span>';
+      const result = splitHighlightedLinesForTest(html, 2);
+
+      // Line 1: span opened but not closed in rawLine → suffix added
+      expect(result[0]).toBe('<span class="hljs-keyword">foo</span>');
+      // Line 2: prefix re-opens the inherited span, rawLine closes it
+      expect(result[1]).toBe('<span class="hljs-keyword">bar</span>');
+    });
+
+    it("handles nested spans crossing line boundaries", () => {
+      // Outer span opens on line 1, inner span opens and closes on line 2,
+      // outer span closes on line 3.
+      const html =
+        '<span class="a">line1\n<span class="b">line2</span>\nline3</span>';
+      const result = splitHighlightedLinesForTest(html, 3);
+
+      expect(result[0]).toBe('<span class="a">line1</span>');
+      expect(result[1]).toBe('<span class="a"><span class="b">line2</span></span>');
+      expect(result[2]).toBe('<span class="a">line3</span>');
+    });
+
+    it("returns lines unchanged when no spans cross boundaries", () => {
+      const html =
+        '<span class="hljs-keyword">const</span> x = 1;\n' +
+        '<span class="hljs-keyword">const</span> y = 2;';
+      const result = splitHighlightedLinesForTest(html, 2);
+
+      expect(result[0]).toBe('<span class="hljs-keyword">const</span> x = 1;');
+      expect(result[1]).toBe('<span class="hljs-keyword">const</span> y = 2;');
     });
   });
 
