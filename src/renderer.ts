@@ -15,8 +15,10 @@ export function renderEmbed({ parsed, content, anchor }: RenderOptions): void {
   const { lines, lineStart, lineEnd, totalLines, extension, isBinary } =
     content;
 
+  // Encode each path/ref segment individually to preserve "/" as the path delimiter.
+  const encodedRef = ref.split("/").map(encodeURIComponent).join("/");
   const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-  const fileUrl = `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/blob/${encodeURIComponent(ref)}/${encodedPath}`;
+  const fileUrl = `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/blob/${encodedRef}/${encodedPath}`;
 
   // --- Container ---
   const container = document.createElement("div");
