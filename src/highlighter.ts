@@ -7,6 +7,7 @@ import cpp from "highlight.js/lib/languages/cpp";
 import csharp from "highlight.js/lib/languages/csharp";
 import css from "highlight.js/lib/languages/css";
 import go from "highlight.js/lib/languages/go";
+import less from "highlight.js/lib/languages/less";
 import java from "highlight.js/lib/languages/java";
 import javascript from "highlight.js/lib/languages/javascript";
 import json from "highlight.js/lib/languages/json";
@@ -17,6 +18,7 @@ import python from "highlight.js/lib/languages/python";
 import ruby from "highlight.js/lib/languages/ruby";
 import rust from "highlight.js/lib/languages/rust";
 import scala from "highlight.js/lib/languages/scala";
+import scss from "highlight.js/lib/languages/scss";
 import shell from "highlight.js/lib/languages/shell";
 import sql from "highlight.js/lib/languages/sql";
 import swift from "highlight.js/lib/languages/swift";
@@ -30,6 +32,7 @@ hljs.registerLanguage("cpp", cpp);
 hljs.registerLanguage("csharp", csharp);
 hljs.registerLanguage("css", css);
 hljs.registerLanguage("go", go);
+hljs.registerLanguage("less", less);
 hljs.registerLanguage("java", java);
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("json", json);
@@ -40,6 +43,7 @@ hljs.registerLanguage("python", python);
 hljs.registerLanguage("ruby", ruby);
 hljs.registerLanguage("rust", rust);
 hljs.registerLanguage("scala", scala);
+hljs.registerLanguage("scss", scss);
 hljs.registerLanguage("shell", shell);
 hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("swift", swift);
@@ -78,9 +82,9 @@ const EXT_TO_LANG: Record<string, string> = {
   zsh: "shell",
   fish: "shell",
   css: "css",
-  scss: "css",
-  sass: "css",
-  less: "css",
+  scss: "scss",
+  sass: "css",  // sass indented syntax has no dedicated hljs definition; css is closest
+  less: "less",
   html: "xml",
   htm: "xml",
   xml: "xml",
