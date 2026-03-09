@@ -18,7 +18,7 @@ function toBase64(text: string): string {
 }
 
 function makeApiResponse(content: string, encoding = "base64") {
-  return { content: toBase64(content), encoding };
+  return { content: encoding === "base64" ? toBase64(content) : content, encoding };
 }
 
 beforeEach(() => {
