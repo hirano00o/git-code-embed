@@ -6,7 +6,6 @@ esbuild
     bundle: true,
     minify: true,
     format: "iife",
-    globalName: "GitCodeEmbed",
     outfile: "dist/git-code-embed.min.js",
     target: ["es2020", "chrome80", "firefox78", "safari14"],
     platform: "browser",
