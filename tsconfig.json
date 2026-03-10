@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2024",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2020", "DOM"],
+    "lib": [
+      "ES2024",
+      "DOM"
+    ],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -11,6 +14,13 @@
     "declaration": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "test/**/*", "esbuild.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "esbuild.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
