@@ -12,6 +12,15 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
+// Block-level elements that act as line boundaries in normal HTML flow.
+const BLOCK_TAGS = new Set([
+  "ADDRESS", "ARTICLE", "ASIDE", "BLOCKQUOTE", "DD", "DETAILS", "DIALOG",
+  "DIV", "DL", "DT", "FIELDSET", "FIGCAPTION", "FIGURE", "FOOTER", "FORM",
+  "H1", "H2", "H3", "H4", "H5", "H6", "HEADER", "HGROUP", "HR", "LI",
+  "MAIN", "NAV", "OL", "P", "PRE", "SECTION", "SUMMARY", "TABLE", "UL",
+  "BR",
+]);
+
 // Returns the nearest non-whitespace sibling node, skipping whitespace-only text nodes.
 function nonWhitespaceSibling(
   node: Node | null,
@@ -32,10 +41,11 @@ function nonWhitespaceSibling(
 function isStandaloneAnchor(a: HTMLAnchorElement): boolean {
   const prev = nonWhitespaceSibling(a.previousSibling, "previous");
   const next = nonWhitespaceSibling(a.nextSibling, "next");
-  // null means edge of parent; BR is treated as a line separator
-  const isEdge = (n: Node | null): boolean =>
-    n === null || (n.nodeType === Node.ELEMENT_NODE && (n as Element).tagName === "BR");
-  return isEdge(prev) && isEdge(next);
+  // null (edge of parent) or a block-level element both act as line boundaries
+  const isLineBoundary = (n: Node | null): boolean =>
+    n === null ||
+    (n.nodeType === Node.ELEMENT_NODE && BLOCK_TAGS.has((n as Element).tagName));
+  return isLineBoundary(prev) && isLineBoundary(next);
 }
 
 async function processAnchor(
