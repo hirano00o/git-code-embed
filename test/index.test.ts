@@ -237,6 +237,24 @@ describe("index", () => {
     expect(mockFetchContent).not.toHaveBeenCalled();
   });
 
+  it("does not convert either anchor when two anchors are separated only by whitespace", async () => {
+    const p = document.createElement("p");
+    const a1 = document.createElement("a");
+    a1.href = "https://github.com/owner/repo/blob/main/a.ts";
+    const a2 = document.createElement("a");
+    a2.href = "https://github.com/owner/repo/blob/main/b.ts";
+    p.appendChild(document.createTextNode("\n  "));
+    p.appendChild(a1);
+    p.appendChild(document.createTextNode("\n  "));
+    p.appendChild(a2);
+    p.appendChild(document.createTextNode("\n"));
+    document.body.appendChild(p);
+
+    await init();
+
+    expect(mockFetchContent).not.toHaveBeenCalled();
+  });
+
   it("does not convert an anchor with preceding text and no following sibling", async () => {
     const p = document.createElement("p");
     p.appendChild(document.createTextNode("link: "));

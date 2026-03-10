@@ -12,15 +12,30 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-function isEdgeSibling(node: Node | null): boolean {
-  if (node === null) return true;
-  // Allow whitespace-only text nodes (e.g. newline + indent between block elements)
-  if (node.nodeType === Node.TEXT_NODE) return node.textContent?.trim() === "";
-  return node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === "BR";
+// Returns the nearest non-whitespace sibling node, skipping whitespace-only text nodes.
+function nonWhitespaceSibling(
+  node: Node | null,
+  direction: "previous" | "next"
+): Node | null {
+  let cur = node;
+  while (cur !== null) {
+    if (cur.nodeType === Node.TEXT_NODE) {
+      if (cur.textContent?.trim() !== "") return cur;
+    } else {
+      return cur;
+    }
+    cur = direction === "previous" ? cur.previousSibling : cur.nextSibling;
+  }
+  return null;
 }
 
 function isStandaloneAnchor(a: HTMLAnchorElement): boolean {
-  return isEdgeSibling(a.previousSibling) && isEdgeSibling(a.nextSibling);
+  const prev = nonWhitespaceSibling(a.previousSibling, "previous");
+  const next = nonWhitespaceSibling(a.nextSibling, "next");
+  // null means edge of parent; BR is treated as a line separator
+  const isEdge = (n: Node | null): boolean =>
+    n === null || (n.nodeType === Node.ELEMENT_NODE && (n as Element).tagName === "BR");
+  return isEdge(prev) && isEdge(next);
 }
 
 async function processAnchor(
