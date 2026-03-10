@@ -14,6 +14,8 @@ function injectStyles(): void {
 
 function isEdgeSibling(node: Node | null): boolean {
   if (node === null) return true;
+  // Allow whitespace-only text nodes (e.g. newline + indent between block elements)
+  if (node.nodeType === Node.TEXT_NODE) return node.textContent?.trim() === "";
   return node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === "BR";
 }
 

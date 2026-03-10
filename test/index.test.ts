@@ -161,6 +161,22 @@ describe("index", () => {
     expect(mockRenderEmbed).toHaveBeenCalledTimes(2);
   });
 
+  it("converts a standalone anchor surrounded by whitespace-only text nodes", async () => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode("\n  "));
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    p.appendChild(a);
+    p.appendChild(document.createTextNode("\n"));
+    document.body.appendChild(p);
+
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+
+    expect(mockFetchContent).toHaveBeenCalledOnce();
+  });
+
   it("converts a standalone anchor inside a <p> tag", async () => {
     const p = document.createElement("p");
     const a = document.createElement("a");
