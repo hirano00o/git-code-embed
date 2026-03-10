@@ -146,9 +146,11 @@ describe("index", () => {
       "https://github.com/owner/repo/blob/main/b.py",
     ];
     for (const url of urls) {
+      const p = document.createElement("p");
       const a = document.createElement("a");
       a.href = url;
-      document.body.appendChild(a);
+      p.appendChild(a);
+      document.body.appendChild(p);
     }
 
     mockFetchContent.mockResolvedValue(makeFetchResult());
@@ -157,5 +159,130 @@ describe("index", () => {
 
     expect(mockFetchContent).toHaveBeenCalledTimes(2);
     expect(mockRenderEmbed).toHaveBeenCalledTimes(2);
+  });
+
+  it("converts an anchor flanked by block-level elements (body-level pattern)", async () => {
+    const h2 = document.createElement("h2");
+    h2.textContent = "Section";
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    const h2after = document.createElement("h2");
+    h2after.textContent = "Next";
+    document.body.appendChild(h2);
+    document.body.appendChild(a);
+    document.body.appendChild(h2after);
+
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+
+    expect(mockFetchContent).toHaveBeenCalledOnce();
+  });
+
+  it("converts a standalone anchor surrounded by whitespace-only text nodes", async () => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode("\n  "));
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    p.appendChild(a);
+    p.appendChild(document.createTextNode("\n"));
+    document.body.appendChild(p);
+
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+
+    expect(mockFetchContent).toHaveBeenCalledOnce();
+  });
+
+  it("converts a standalone anchor inside a <p> tag", async () => {
+    const p = document.createElement("p");
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    p.appendChild(a);
+    document.body.appendChild(p);
+
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+
+    expect(mockFetchContent).toHaveBeenCalledOnce();
+  });
+
+  it("converts an anchor that is immediately preceded by a <br>", async () => {
+    const p = document.createElement("p");
+    const br = document.createElement("br");
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    p.appendChild(br);
+    p.appendChild(a);
+    document.body.appendChild(p);
+
+    mockFetchContent.mockResolvedValue(makeFetchResult());
+
+    await init();
+
+    expect(mockFetchContent).toHaveBeenCalledOnce();
+  });
+
+  it("does not convert an anchor with surrounding text", async () => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode("See "));
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    a.textContent = "this file";
+    p.appendChild(a);
+    p.appendChild(document.createTextNode(" for details."));
+    document.body.appendChild(p);
+
+    await init();
+
+    expect(mockFetchContent).not.toHaveBeenCalled();
+  });
+
+  it("does not convert either anchor when two anchors are on the same line", async () => {
+    const p = document.createElement("p");
+    const a1 = document.createElement("a");
+    a1.href = "https://github.com/owner/repo/blob/main/a.ts";
+    const a2 = document.createElement("a");
+    a2.href = "https://github.com/owner/repo/blob/main/b.ts";
+    p.appendChild(a1);
+    p.appendChild(a2);
+    document.body.appendChild(p);
+
+    await init();
+
+    expect(mockFetchContent).not.toHaveBeenCalled();
+  });
+
+  it("does not convert either anchor when two anchors are separated only by whitespace", async () => {
+    const p = document.createElement("p");
+    const a1 = document.createElement("a");
+    a1.href = "https://github.com/owner/repo/blob/main/a.ts";
+    const a2 = document.createElement("a");
+    a2.href = "https://github.com/owner/repo/blob/main/b.ts";
+    p.appendChild(document.createTextNode("\n  "));
+    p.appendChild(a1);
+    p.appendChild(document.createTextNode("\n  "));
+    p.appendChild(a2);
+    p.appendChild(document.createTextNode("\n"));
+    document.body.appendChild(p);
+
+    await init();
+
+    expect(mockFetchContent).not.toHaveBeenCalled();
+  });
+
+  it("does not convert an anchor with preceding text and no following sibling", async () => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode("link: "));
+    const a = document.createElement("a");
+    a.href = "https://github.com/owner/repo/blob/main/src/index.ts";
+    p.appendChild(a);
+    document.body.appendChild(p);
+
+    await init();
+
+    expect(mockFetchContent).not.toHaveBeenCalled();
   });
 });
