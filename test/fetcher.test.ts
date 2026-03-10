@@ -100,6 +100,21 @@ describe("fetchContent", () => {
     expect(result.totalLines).toBe(10);
   });
 
+  it("clamps lineStart to totalLines when it exceeds the file length", async () => {
+    const raw = "a\nb\nc";
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify(makeApiResponse(raw)), { status: 200 })
+    );
+
+    const result = await fetchContent({ ...base, lineStart: 10, lineEnd: 10 });
+
+    // lineStart beyond EOF: clamp both start and end to totalLines
+    expect(result.lines).toEqual(["c"]);
+    expect(result.lineStart).toBe(3);
+    expect(result.lineEnd).toBe(3);
+    expect(result.totalLines).toBe(3);
+  });
+
   it("clamps lineEnd to totalLines when it exceeds the file length", async () => {
     const raw = "a\nb\nc";
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(

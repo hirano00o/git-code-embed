@@ -58,7 +58,7 @@ export async function fetchContent(
   if (allLines.at(-1) === "") allLines.pop();
 
   const totalLines = allLines.length;
-  const start = lineStart ?? 1;
+  const start = Math.min(lineStart ?? 1, totalLines || 1);
   const end = Math.min(lineEnd ?? totalLines, totalLines);
 
   // Convert 1-based to 0-based indices for slicing
