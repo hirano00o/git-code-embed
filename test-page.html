@@ -35,6 +35,18 @@
   <h2>通常のリンク（変換されない）</h2>
   <a href="https://example.com">example.com</a>
 
+  <h2>文中のインラインリンク（変換されない）</h2>
+  <p>詳細は<a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go">このファイル</a>を参照してください。</p>
+
+  <h2>前後にテキストのある GitHub リンク（変換されない）</h2>
+  <p>See <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go#L1-L15">src/fmt/print.go#L1-L15</a> for the implementation.</p>
+
+  <h2>同一行に複数 GitHub リンク（どちらも変換されない）</h2>
+  <p>
+    <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go">print.go</a>
+    <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/doc.go">doc.go</a>
+  </p>
+
   <script src="dist/git-code-embed.min.js"></script>
 </body>
 </html>

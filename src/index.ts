@@ -12,6 +12,15 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
+function isEdgeSibling(node: Node | null): boolean {
+  if (node === null) return true;
+  return node.nodeType === Node.ELEMENT_NODE && (node as Element).tagName === "BR";
+}
+
+function isStandaloneAnchor(a: HTMLAnchorElement): boolean {
+  return isEdgeSibling(a.previousSibling) && isEdgeSibling(a.nextSibling);
+}
+
 async function processAnchor(
   anchor: HTMLAnchorElement,
   parsed: ParsedGitHubUrl
@@ -36,6 +45,7 @@ export function init(): Promise<void> {
     document.querySelectorAll<HTMLAnchorElement>("a[href]")
   ).filter((a) => !a.closest(".gce-container"));
   const githubAnchors = anchors.flatMap((a) => {
+    if (!isStandaloneAnchor(a)) return [];
     const parsed = parseGitHubUrl(a.href);
     return parsed ? [{ anchor: a, parsed }] : [];
   });
@@ -45,4 +55,3 @@ export function init(): Promise<void> {
     githubAnchors.map(({ anchor, parsed }) => processAnchor(anchor, parsed))
   ).then(() => undefined);
 }
-
