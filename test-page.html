@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>git-code-embed テストページ</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h2 { margin-top: 2em; }
+  </style>
+</head>
+<body>
+  <h1>git-code-embed テストページ</h1>
+
+  <h2>行指定なし（全体表示）</h2>
+  <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go">
+    https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go
+  </a>
+
+  <h2>行範囲指定（L1-L15）</h2>
+  <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go#L1-L15">
+    https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go#L1-L15
+  </a>
+
+  <h2>単一行指定（L5）</h2>
+  <a href="https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go#L5">
+    https://github.com/golang/go/blob/release-branch.go1.26/src/fmt/print.go#L5
+  </a>
+
+  <h2>バイナリファイル（画像）</h2>
+  <a href="https://github.com/golang/go/blob/33d725e5758bf1fea62e6c77fc70b57a828a49f5/src/archive/zip/testdata/comment-truncated.zip">
+    https://github.com/golang/go/blob/33d725e5758bf1fea62e6c77fc70b57a828a49f5/src/archive/zip/testdata/comment-truncated.zip
+  </a>
+
+  <h2>通常のリンク（変換されない）</h2>
+  <a href="https://example.com">example.com</a>
+
+  <script src="dist/git-code-embed.min.js"></script>
+</body>
+</html>

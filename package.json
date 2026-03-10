@@ -1,0 +1,20 @@
+{
+  "name": "git-code-embed",
+  "version": "0.1.0",
+  "description": "Embed GitHub code snippets with syntax highlighting in blog posts",
+  "main": "dist/git-code-embed.min.js",
+  "scripts": {
+    "build": "tsx esbuild.config.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.24.0",
+    "highlight.js": "^11.10.0",
+    "jsdom": "^25.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}
