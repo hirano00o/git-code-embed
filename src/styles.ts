@@ -1,13 +1,15 @@
 /**
  * CSS injected into the page as a single <style> tag.
  * All class names use the `gce-` prefix to avoid collisions with host pages.
+ *
+ * Build-time constant __THEME__ selects the color palette.
+ * Dead code elimination removes the unused palette from the bundle.
  */
-export const CSS = `
+
+declare const __THEME__: string;
+
+export const LIGHT_COLORS = `
 :root {
-  --gce-line-height: 1.5em;
-  --gce-font-size: 13px;
-  --gce-font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --gce-ui-font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   --gce-bg: #f6f8fa;
   --gce-border: #d0d7de;
   --gce-header-bg: #f6f8fa;
@@ -18,6 +20,90 @@ export const CSS = `
   --gce-code-bg: #ffffff;
 }
 
+.gce-container .hljs-keyword,
+.gce-container .hljs-selector-tag,
+.gce-container .hljs-built_in,
+.gce-container .hljs-name,
+.gce-container .hljs-tag { color: #cf222e; }
+
+.gce-container .hljs-string,
+.gce-container .hljs-attr,
+.gce-container .hljs-symbol,
+.gce-container .hljs-bullet,
+.gce-container .hljs-addition { color: #0a3069; }
+
+.gce-container .hljs-title,
+.gce-container .hljs-section,
+.gce-container .hljs-type,
+.gce-container .hljs-function { color: #8250df; }
+
+.gce-container .hljs-variable,
+.gce-container .hljs-template-variable { color: #953800; }
+
+.gce-container .hljs-comment,
+.gce-container .hljs-quote,
+.gce-container .hljs-deletion,
+.gce-container .hljs-meta { color: #6e7781; font-style: italic; }
+
+.gce-container .hljs-number,
+.gce-container .hljs-regexp,
+.gce-container .hljs-literal,
+.gce-container .hljs-doctag { color: #0550ae; }
+`;
+
+export const DARK_COLORS = `
+:root {
+  --gce-bg: #161b22;
+  --gce-border: #30363d;
+  --gce-header-bg: #161b22;
+  --gce-header-text: #e6edf3;
+  --gce-header-link: #58a6ff;
+  --gce-lineno-color: #8b949e;
+  --gce-lineno-bg: #161b22;
+  --gce-code-bg: #0d1117;
+}
+
+.gce-container .hljs-keyword,
+.gce-container .hljs-selector-tag,
+.gce-container .hljs-built_in,
+.gce-container .hljs-name,
+.gce-container .hljs-tag { color: #ff7b72; }
+
+.gce-container .hljs-string,
+.gce-container .hljs-attr,
+.gce-container .hljs-symbol,
+.gce-container .hljs-bullet,
+.gce-container .hljs-addition { color: #a5d6ff; }
+
+.gce-container .hljs-title,
+.gce-container .hljs-section,
+.gce-container .hljs-type,
+.gce-container .hljs-function { color: #d2a8ff; }
+
+.gce-container .hljs-variable,
+.gce-container .hljs-template-variable { color: #ffa657; }
+
+.gce-container .hljs-comment,
+.gce-container .hljs-quote,
+.gce-container .hljs-deletion,
+.gce-container .hljs-meta { color: #8b949e; font-style: italic; }
+
+.gce-container .hljs-number,
+.gce-container .hljs-regexp,
+.gce-container .hljs-literal,
+.gce-container .hljs-doctag { color: #79c0ff; }
+`;
+
+const THEME_COLORS = __THEME__ === "dark" ? DARK_COLORS : LIGHT_COLORS;
+
+export const CSS = `
+:root {
+  --gce-line-height: 1.5em;
+  --gce-font-size: 13px;
+  --gce-font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --gce-ui-font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+${THEME_COLORS}
 .gce-container,
 .gce-container *,
 .gce-container *::before,
@@ -138,36 +224,6 @@ export const CSS = `
   font-size: .9rem;
   text-decoration: none;
 }
-
-.gce-container .hljs-keyword,
-.gce-container .hljs-selector-tag,
-.gce-container .hljs-built_in,
-.gce-container .hljs-name,
-.gce-container .hljs-tag { color: #cf222e; }
-
-.gce-container .hljs-string,
-.gce-container .hljs-attr,
-.gce-container .hljs-symbol,
-.gce-container .hljs-bullet,
-.gce-container .hljs-addition { color: #0a3069; }
-
-.gce-container .hljs-title,
-.gce-container .hljs-section,
-.gce-container .hljs-type,
-.gce-container .hljs-function { color: #8250df; }
-
-.gce-container .hljs-variable,
-.gce-container .hljs-template-variable { color: #953800; }
-
-.gce-container .hljs-comment,
-.gce-container .hljs-quote,
-.gce-container .hljs-deletion,
-.gce-container .hljs-meta { color: #6e7781; font-style: italic; }
-
-.gce-container .hljs-number,
-.gce-container .hljs-regexp,
-.gce-container .hljs-literal,
-.gce-container .hljs-doctag { color: #0550ae; }
 
 .gce-container .hljs-emphasis { font-style: italic; }
 
