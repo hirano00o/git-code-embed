@@ -5,4 +5,7 @@ export default defineConfig({
     environment: "jsdom",
     include: ["test/**/*.test.ts"],
   },
+  define: {
+    __THEME__: JSON.stringify("light"),
+  },
 });

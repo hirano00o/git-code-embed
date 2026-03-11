@@ -95,6 +95,35 @@ https://github.com/owner/repo/blob/main/src/index.ts#L1-L10
 </p>
 ```
 
+## ダークモード
+
+ダークテーマ対応サイト向けに、GitHub Dark Default テーマ準拠の別バンドルを用意しています。
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed-dark.min.js"></script>
+```
+
+### はてなブログ（ダークテーマ）での使い方
+
+管理画面の **設定 → 詳細設定** の `<head>` 要素欄に、ダーク版の URL を貼り付けます。
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed-dark.min.js" defer></script>
+```
+
+### ビルド
+
+```bash
+# ライトモード（デフォルト） → dist/git-code-embed.min.js
+npm run build
+
+# ダークモード → dist/git-code-embed-dark.min.js
+npm run build:dark
+
+# 両方同時にビルド
+npm run build:all
+```
+
 ## 既知の制限
 
 ### スラッシュを含むブランチ名（例: `feature/my-branch`）は未対応

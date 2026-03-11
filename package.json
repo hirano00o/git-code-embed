@@ -5,6 +5,8 @@
   "main": "dist/git-code-embed.min.js",
   "scripts": {
     "build": "tsx esbuild.config.ts",
+    "build:dark": "tsx esbuild.config.ts --dark",
+    "build:all": "tsx esbuild.config.ts && tsx esbuild.config.ts --dark",
     "test": "vitest run",
     "test:watch": "vitest"
   },
