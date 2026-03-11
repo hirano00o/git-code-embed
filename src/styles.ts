@@ -184,7 +184,8 @@ ${THEME_COLORS}
 
 .gce-container .gce-code-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
 .gce-container .gce-code-wrap::-webkit-scrollbar-track { background: var(--gce-scrollbar-track); }
-.gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); border-radius: 4px; }
+/* border-radius は Chrome 121+ で scrollbar-width が有効な場合 ::-webkit-scrollbar-* が無視されるため省略 */
+.gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); }
 .gce-container .gce-code-wrap::-webkit-scrollbar-corner { background: var(--gce-scrollbar-track); }
 
 .gce-container .gce-table {
