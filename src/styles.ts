@@ -18,6 +18,8 @@ export const LIGHT_COLORS = `
   --gce-lineno-color: #6e7781;
   --gce-lineno-bg: #f6f8fa;
   --gce-code-bg: #ffffff;
+  --gce-scrollbar-thumb: #afb8c1;
+  --gce-scrollbar-track: #ffffff;
 }
 
 .gce-container .hljs-keyword,
@@ -61,6 +63,8 @@ export const DARK_COLORS = `
   --gce-lineno-color: #8b949e;
   --gce-lineno-bg: #161b22;
   --gce-code-bg: #0d1117;
+  --gce-scrollbar-thumb: #484f58;
+  --gce-scrollbar-track: #0d1117;
 }
 
 .gce-container .hljs-keyword,
@@ -174,7 +178,14 @@ ${THEME_COLORS}
   overflow-x: auto;
   overflow-y: auto;
   max-height: calc(var(--gce-line-height) * 15 + 2px);
+  scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-scrollbar-track);
+  scrollbar-width: thin;
 }
+
+.gce-container .gce-code-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+.gce-container .gce-code-wrap::-webkit-scrollbar-track { background: var(--gce-scrollbar-track); }
+.gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); border-radius: 4px; }
+.gce-container .gce-code-wrap::-webkit-scrollbar-corner { background: var(--gce-scrollbar-track); }
 
 .gce-container .gce-table {
   border-collapse: collapse;
