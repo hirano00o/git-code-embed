@@ -162,7 +162,10 @@ describe("CSS (テーマ: light)", () => {
   });
 
   it("td.gce-code に基本テキスト色の CSS 変数を含む", () => {
-    expect(CSS).toContain("color: var(--gce-code-text)");
+    const selectorIdx = CSS.indexOf("td.gce-code");
+    const colorIdx = CSS.indexOf("color: var(--gce-code-text)");
+    expect(selectorIdx).toBeGreaterThan(-1);
+    expect(colorIdx).toBeGreaterThan(selectorIdx);
   });
 
   it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {
