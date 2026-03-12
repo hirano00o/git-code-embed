@@ -18,6 +18,7 @@ export const LIGHT_COLORS = `
   --gce-lineno-color: #6e7781;
   --gce-lineno-bg: #f6f8fa;
   --gce-code-bg: #ffffff;
+  --gce-scrollbar-thumb: #afb8c1;
 }
 
 .gce-container .hljs-keyword,
@@ -61,6 +62,7 @@ export const DARK_COLORS = `
   --gce-lineno-color: #8b949e;
   --gce-lineno-bg: #161b22;
   --gce-code-bg: #0d1117;
+  --gce-scrollbar-thumb: #484f58;
 }
 
 .gce-container .hljs-keyword,
@@ -174,6 +176,22 @@ ${THEME_COLORS}
   overflow-x: auto;
   overflow-y: auto;
   max-height: calc(var(--gce-line-height) * 15 + 2px);
+}
+
+/* Chrome 121+ / Firefox: scrollbar-color をサポートするブラウザに標準プロパティを適用 */
+@supports (scrollbar-color: auto) {
+  .gce-container .gce-code-wrap {
+    scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg);
+    scrollbar-width: thin;
+  }
+}
+
+/* Safari 等 scrollbar-color 非対応: webkit 疑似要素を使用 */
+@supports not (scrollbar-color: auto) {
+  .gce-container .gce-code-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-track { background: var(--gce-code-bg); }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-corner { background: var(--gce-code-bg); }
 }
 
 .gce-container .gce-table {
