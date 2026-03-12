@@ -45,9 +45,8 @@ describe("LIGHT_COLORS", () => {
     expect(LIGHT_COLORS).toContain("color: #0550ae");
   });
 
-  it("ライトテーマのスクロールバー色を含む", () => {
+  it("ライトテーマのスクロールバー thumb 色を含む", () => {
     expect(LIGHT_COLORS).toContain("--gce-scrollbar-thumb: #afb8c1");
-    expect(LIGHT_COLORS).toContain("--gce-scrollbar-track: #ffffff");
   });
 });
 
@@ -95,9 +94,8 @@ describe("DARK_COLORS", () => {
     expect(DARK_COLORS).toContain("color: #79c0ff");
   });
 
-  it("ダークテーマのスクロールバー色を含む", () => {
+  it("ダークテーマのスクロールバー thumb 色を含む", () => {
     expect(DARK_COLORS).toContain("--gce-scrollbar-thumb: #484f58");
-    expect(DARK_COLORS).toContain("--gce-scrollbar-track: #0d1117");
   });
 });
 
@@ -122,8 +120,9 @@ describe("CSS (テーマ: light)", () => {
     expect(CSS).toContain("display: flex");
   });
 
-  it("scrollbar-color と scrollbar-width を含む", () => {
-    expect(CSS).toContain("scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-scrollbar-track)");
+  it("@supports で排他化された scrollbar-color と scrollbar-width を含む", () => {
+    expect(CSS).toContain("@supports not selector(::-webkit-scrollbar)");
+    expect(CSS).toContain("scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg)");
     expect(CSS).toContain("scrollbar-width: thin");
   });
 
