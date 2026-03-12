@@ -96,7 +96,15 @@ export const DARK_COLORS = `
 .gce-container .hljs-doctag { color: #79c0ff; }
 `;
 
-const THEME_COLORS = __THEME__ === "dark" ? DARK_COLORS : LIGHT_COLORS;
+export function buildThemeCSS(theme: string): string {
+  if (theme === "dark") return DARK_COLORS;
+  if (theme === "auto") {
+    return `${LIGHT_COLORS}\n@media (prefers-color-scheme: dark) {\n${DARK_COLORS}\n}`;
+  }
+  return LIGHT_COLORS;
+}
+
+const THEME_COLORS = buildThemeCSS(__THEME__);
 
 export const CSS = `
 :root {

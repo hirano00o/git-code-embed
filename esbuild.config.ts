@@ -1,10 +1,13 @@
 import * as esbuild from "esbuild";
 
 const dark = process.argv.includes("--dark");
-const theme = dark ? "dark" : "light";
+const auto = process.argv.includes("--auto");
+const theme = dark ? "dark" : auto ? "auto" : "light";
 const outfile = dark
   ? "dist/git-code-embed-dark.min.js"
-  : "dist/git-code-embed.min.js";
+  : auto
+    ? "dist/git-code-embed.min.js"
+    : "dist/git-code-embed-light.min.js";
 
 esbuild
   .build({
