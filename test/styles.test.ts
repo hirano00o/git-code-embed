@@ -170,7 +170,7 @@ describe("CSS (テーマ: light)", () => {
   });
 
   it("td.gce-code に基本テキスト色の CSS 変数を含む", () => {
-    const selectorIdx = CSS.indexOf(".gce-table td.gce-code {");
+    const selectorIdx = CSS.indexOf(".gce-container .gce-table td.gce-code {");
     expect(selectorIdx).toBeGreaterThan(-1);
     const blockContent = CSS.slice(selectorIdx);
     const blockEnd = blockContent.indexOf("}");
