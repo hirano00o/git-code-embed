@@ -97,30 +97,44 @@ https://github.com/owner/repo/blob/main/src/index.ts#L1-L10
 
 ## ダークモード
 
-ダークテーマ対応サイト向けに、GitHub Dark Default テーマ準拠の別バンドルを用意しています。
+デフォルトの `git-code-embed.min.js` は `prefers-color-scheme` メディアクエリで OS のテーマ設定に自動追従します。
+ライトモード固定・ダークモード固定のバンドルも用意しています。
+
+| ファイル | 挙動 |
+|---|---|
+| `git-code-embed.min.js` | OS のダーク/ライト設定に自動追従（推奨） |
+| `git-code-embed-light.min.js` | ライトモード固定 |
+| `git-code-embed-dark.min.js` | ダークモード固定 |
+
+### はてなブログでの使い方
+
+管理画面の **設定 → 詳細設定** の `<head>` 要素欄に以下を貼り付けます。
+OS テーマに自動追従させる場合はデフォルトの URL をそのまま使用してください。
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed-dark.min.js"></script>
-```
+<!-- OS のダーク/ライト設定に自動追従（推奨） -->
+<script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed.min.js" defer></script>
 
-### はてなブログ（ダークテーマ）での使い方
-
-管理画面の **設定 → 詳細設定** の `<head>` 要素欄に、ダーク版の URL を貼り付けます。
-
-```html
+<!-- ダークモード固定 -->
 <script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed-dark.min.js" defer></script>
+
+<!-- ライトモード固定 -->
+<script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed-light.min.js" defer></script>
 ```
 
 ### ビルド
 
 ```bash
-# ライトモード（デフォルト） → dist/git-code-embed.min.js
+# オートテーマ（デフォルト、OS のダーク/ライト設定に自動追従） → dist/git-code-embed.min.js
 npm run build
 
-# ダークモード → dist/git-code-embed-dark.min.js
+# ライトモード固定 → dist/git-code-embed-light.min.js
+npm run build:light
+
+# ダークモード固定 → dist/git-code-embed-dark.min.js
 npm run build:dark
 
-# 両方同時にビルド
+# 全バリアント同時ビルド
 npm run build:all
 ```
 
