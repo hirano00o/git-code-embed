@@ -175,6 +175,12 @@ describe("CSS (テーマ: light)", () => {
     expect(match![1]).toContain("color: var(--gce-code-text)");
   });
 
+  it(".gce-table に margin: 0 を含む", () => {
+    const match = CSS.match(/\.gce-container \.gce-table \{([^}]*)\}/);
+    expect(match).not.toBeNull();
+    expect(match![1]).toContain("margin: 0");
+  });
+
   it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {
     expect(CSS).toContain("@supports (scrollbar-color: auto)");
     expect(CSS).toContain("scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg)");
