@@ -129,6 +129,14 @@ describe("buildThemeCSS", () => {
     expect(afterMedia).toContain(DARK_COLORS);
   });
 
+  it('"auto" → ダーク側の --gce-code-text が @media ブロック内に現れる', () => {
+    const css = buildThemeCSS("auto");
+    const mediaStart = css.indexOf("@media (prefers-color-scheme: dark)");
+    expect(mediaStart).toBeGreaterThan(-1);
+    const afterMedia = css.slice(mediaStart);
+    expect(afterMedia).toContain("--gce-code-text: #e6edf3");
+  });
+
   it('"auto" → LIGHT_COLORS が DARK_COLORS より前に現れる', () => {
     const css = buildThemeCSS("auto");
     expect(css.indexOf(LIGHT_COLORS)).toBeLessThan(css.indexOf(DARK_COLORS));
