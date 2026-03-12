@@ -170,11 +170,9 @@ describe("CSS (テーマ: light)", () => {
   });
 
   it("td.gce-code に基本テキスト色の CSS 変数を含む", () => {
-    const selectorIdx = CSS.indexOf(".gce-container .gce-table td.gce-code {");
-    expect(selectorIdx).toBeGreaterThan(-1);
-    const blockContent = CSS.slice(selectorIdx);
-    const blockEnd = blockContent.indexOf("}");
-    expect(blockContent.slice(0, blockEnd)).toContain("color: var(--gce-code-text)");
+    const match = CSS.match(/\.gce-container \.gce-table td\.gce-code \{([^}]*)\}/);
+    expect(match).not.toBeNull();
+    expect(match![1]).toContain("color: var(--gce-code-text)");
   });
 
   it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {
