@@ -192,7 +192,7 @@ ${THEME_COLORS}
 @supports (scrollbar-color: auto) {
   .gce-container .gce-code-wrap {
     scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg);
-    scrollbar-width: thin;
+    scrollbar-width: auto;
   }
 }
 
@@ -208,6 +208,7 @@ ${THEME_COLORS}
   border-collapse: collapse;
   width: 100%;
   display: table;
+  margin: 0;
 }
 
 .gce-container .gce-table td.gce-lineno {
