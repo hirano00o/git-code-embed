@@ -45,6 +45,10 @@ describe("LIGHT_COLORS", () => {
     expect(LIGHT_COLORS).toContain("color: #0550ae");
   });
 
+  it("ライトテーマの基本テキスト色を含む", () => {
+    expect(LIGHT_COLORS).toContain("--gce-code-text: #24292f");
+  });
+
   it("ライトテーマのスクロールバー thumb 色を含む", () => {
     expect(LIGHT_COLORS).toContain("--gce-scrollbar-thumb: #afb8c1");
   });
@@ -92,6 +96,10 @@ describe("DARK_COLORS", () => {
 
   it("ダークテーマの hljs 数値色を含む", () => {
     expect(DARK_COLORS).toContain("color: #79c0ff");
+  });
+
+  it("ダークテーマの基本テキスト色を含む", () => {
+    expect(DARK_COLORS).toContain("--gce-code-text: #e6edf3");
   });
 
   it("ダークテーマのスクロールバー thumb 色を含む", () => {
@@ -151,6 +159,10 @@ describe("CSS (テーマ: light)", () => {
   it("構造 CSS（box-sizing, flex 等）を含む", () => {
     expect(CSS).toContain("box-sizing: border-box");
     expect(CSS).toContain("display: flex");
+  });
+
+  it("td.gce-code に基本テキスト色の CSS 変数を含む", () => {
+    expect(CSS).toContain("color: var(--gce-code-text)");
   });
 
   it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {

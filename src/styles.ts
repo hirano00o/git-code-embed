@@ -18,6 +18,7 @@ export const LIGHT_COLORS = `
   --gce-lineno-color: #6e7781;
   --gce-lineno-bg: #f6f8fa;
   --gce-code-bg: #ffffff;
+  --gce-code-text: #24292f;
   --gce-scrollbar-thumb: #afb8c1;
 }
 
@@ -62,6 +63,7 @@ export const DARK_COLORS = `
   --gce-lineno-color: #8b949e;
   --gce-lineno-bg: #161b22;
   --gce-code-bg: #0d1117;
+  --gce-code-text: #e6edf3;
   --gce-scrollbar-thumb: #484f58;
 }
 
@@ -227,6 +229,7 @@ ${THEME_COLORS}
 .gce-container .gce-table td.gce-code {
   width: 100%;
   padding: 0 16px;
+  color: var(--gce-code-text);
   line-height: var(--gce-line-height);
   white-space: pre;
   vertical-align: top;
