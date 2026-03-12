@@ -1,12 +1,13 @@
 {
   "name": "git-code-embed",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Embed GitHub code snippets with syntax highlighting in blog posts",
   "main": "dist/git-code-embed.min.js",
   "scripts": {
-    "build": "tsx esbuild.config.ts",
+    "build": "tsx esbuild.config.ts --auto",
+    "build:light": "tsx esbuild.config.ts",
     "build:dark": "tsx esbuild.config.ts --dark",
-    "build:all": "tsx esbuild.config.ts && tsx esbuild.config.ts --dark",
+    "build:all": "tsx esbuild.config.ts --auto && tsx esbuild.config.ts && tsx esbuild.config.ts --dark",
     "test": "vitest run",
     "test:watch": "vitest"
   },

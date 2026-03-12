@@ -18,6 +18,7 @@ export const LIGHT_COLORS = `
   --gce-lineno-color: #6e7781;
   --gce-lineno-bg: #f6f8fa;
   --gce-code-bg: #ffffff;
+  --gce-code-text: #24292f;
   --gce-scrollbar-thumb: #afb8c1;
 }
 
@@ -62,6 +63,7 @@ export const DARK_COLORS = `
   --gce-lineno-color: #8b949e;
   --gce-lineno-bg: #161b22;
   --gce-code-bg: #0d1117;
+  --gce-code-text: #e6edf3;
   --gce-scrollbar-thumb: #484f58;
 }
 
@@ -96,7 +98,15 @@ export const DARK_COLORS = `
 .gce-container .hljs-doctag { color: #79c0ff; }
 `;
 
-const THEME_COLORS = __THEME__ === "dark" ? DARK_COLORS : LIGHT_COLORS;
+export function buildThemeCSS(theme: string): string {
+  if (theme === "dark") return DARK_COLORS;
+  if (theme === "auto") {
+    return `${LIGHT_COLORS}\n@media (prefers-color-scheme: dark) {\n${DARK_COLORS}\n}`;
+  }
+  return LIGHT_COLORS;
+}
+
+const THEME_COLORS = buildThemeCSS(__THEME__);
 
 export const CSS = `
 :root {
@@ -219,6 +229,7 @@ ${THEME_COLORS}
 .gce-container .gce-table td.gce-code {
   width: 100%;
   padding: 0 16px;
+  color: var(--gce-code-text);
   line-height: var(--gce-line-height);
   white-space: pre;
   vertical-align: top;

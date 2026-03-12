@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CSS, DARK_COLORS, LIGHT_COLORS } from "../src/styles";
+import { buildThemeCSS, CSS, DARK_COLORS, LIGHT_COLORS } from "../src/styles";
 
 describe("LIGHT_COLORS", () => {
   it("ライトテーマの背景色を含む", () => {
@@ -43,6 +43,10 @@ describe("LIGHT_COLORS", () => {
 
   it("ライトテーマの hljs 数値色を含む", () => {
     expect(LIGHT_COLORS).toContain("color: #0550ae");
+  });
+
+  it("ライトテーマの基本テキスト色を含む", () => {
+    expect(LIGHT_COLORS).toContain("--gce-code-text: #24292f");
   });
 
   it("ライトテーマのスクロールバー thumb 色を含む", () => {
@@ -94,8 +98,53 @@ describe("DARK_COLORS", () => {
     expect(DARK_COLORS).toContain("color: #79c0ff");
   });
 
+  it("ダークテーマの基本テキスト色を含む", () => {
+    expect(DARK_COLORS).toContain("--gce-code-text: #e6edf3");
+  });
+
   it("ダークテーマのスクロールバー thumb 色を含む", () => {
     expect(DARK_COLORS).toContain("--gce-scrollbar-thumb: #484f58");
+  });
+});
+
+describe("buildThemeCSS", () => {
+  it('"light" → LIGHT_COLORS のみ返す', () => {
+    expect(buildThemeCSS("light")).toBe(LIGHT_COLORS);
+  });
+
+  it('"dark" → DARK_COLORS のみ返す', () => {
+    expect(buildThemeCSS("dark")).toBe(DARK_COLORS);
+  });
+
+  it('"auto" → LIGHT_COLORS を含む', () => {
+    expect(buildThemeCSS("auto")).toContain(LIGHT_COLORS);
+  });
+
+  it('"auto" → DARK_COLORS が @media (prefers-color-scheme: dark) で囲まれている', () => {
+    const css = buildThemeCSS("auto");
+    const mediaStart = css.indexOf("@media (prefers-color-scheme: dark)");
+    expect(mediaStart).toBeGreaterThan(-1);
+    // DARK_COLORS はメディアクエリブロック内に含まれる
+    const afterMedia = css.slice(mediaStart);
+    expect(afterMedia).toContain(DARK_COLORS);
+  });
+
+  it('"auto" → ダーク側の --gce-code-text が @media ブロック内に現れる', () => {
+    const css = buildThemeCSS("auto");
+    const mediaStart = css.indexOf("@media (prefers-color-scheme: dark)");
+    expect(mediaStart).toBeGreaterThan(-1);
+    const afterMedia = css.slice(mediaStart);
+    expect(afterMedia).toContain("--gce-code-text: #e6edf3");
+  });
+
+  it('"auto" → LIGHT_COLORS が DARK_COLORS より前に現れる', () => {
+    const css = buildThemeCSS("auto");
+    expect(css.indexOf(LIGHT_COLORS)).toBeLessThan(css.indexOf(DARK_COLORS));
+  });
+
+  it('不明な値 → LIGHT_COLORS にフォールバック', () => {
+    expect(buildThemeCSS("unknown")).toBe(LIGHT_COLORS);
+    expect(buildThemeCSS("")).toBe(LIGHT_COLORS);
   });
 });
 
@@ -118,6 +167,12 @@ describe("CSS (テーマ: light)", () => {
   it("構造 CSS（box-sizing, flex 等）を含む", () => {
     expect(CSS).toContain("box-sizing: border-box");
     expect(CSS).toContain("display: flex");
+  });
+
+  it("td.gce-code に基本テキスト色の CSS 変数を含む", () => {
+    const match = CSS.match(/\.gce-container \.gce-table td\.gce-code \{([^}]*)\}/);
+    expect(match).not.toBeNull();
+    expect(match![1]).toContain("color: var(--gce-code-text)");
   });
 
   it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {
