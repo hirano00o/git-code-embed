@@ -178,19 +178,21 @@ ${THEME_COLORS}
   max-height: calc(var(--gce-line-height) * 15 + 2px);
 }
 
-/* Firefox: scrollbar-width が有効な場合 ::-webkit-scrollbar-* も無視されるため @supports で排他化 */
-@supports not selector(::-webkit-scrollbar) {
+/* Chrome 121+ / Firefox: scrollbar-color をサポートするブラウザに標準プロパティを適用 */
+@supports (scrollbar-color: auto) {
   .gce-container .gce-code-wrap {
     scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg);
     scrollbar-width: thin;
   }
 }
 
-/* Safari / Chrome 120 以下 */
-.gce-container .gce-code-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
-.gce-container .gce-code-wrap::-webkit-scrollbar-track { background: var(--gce-code-bg); }
-.gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); }
-.gce-container .gce-code-wrap::-webkit-scrollbar-corner { background: var(--gce-code-bg); }
+/* Safari 等 scrollbar-color 非対応: webkit 疑似要素を使用 */
+@supports not (scrollbar-color: auto) {
+  .gce-container .gce-code-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-track { background: var(--gce-code-bg); }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-thumb { background-color: var(--gce-scrollbar-thumb); }
+  .gce-container .gce-code-wrap::-webkit-scrollbar-corner { background: var(--gce-code-bg); }
+}
 
 .gce-container .gce-table {
   border-collapse: collapse;

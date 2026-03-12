@@ -120,13 +120,14 @@ describe("CSS (テーマ: light)", () => {
     expect(CSS).toContain("display: flex");
   });
 
-  it("@supports で排他化された scrollbar-color と scrollbar-width を含む", () => {
-    expect(CSS).toContain("@supports not selector(::-webkit-scrollbar)");
+  it("scrollbar-color サポートブラウザ向けの @supports ブロックを含む", () => {
+    expect(CSS).toContain("@supports (scrollbar-color: auto)");
     expect(CSS).toContain("scrollbar-color: var(--gce-scrollbar-thumb) var(--gce-code-bg)");
     expect(CSS).toContain("scrollbar-width: thin");
   });
 
-  it("::-webkit-scrollbar 系ルールを含む", () => {
+  it("scrollbar-color 非対応ブラウザ向けの @supports not ブロックに webkit ルールを含む", () => {
+    expect(CSS).toContain("@supports not (scrollbar-color: auto)");
     expect(CSS).toContain("::-webkit-scrollbar");
     expect(CSS).toContain("::-webkit-scrollbar-track");
     expect(CSS).toContain("::-webkit-scrollbar-thumb");
