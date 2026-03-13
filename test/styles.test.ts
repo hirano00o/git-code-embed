@@ -157,6 +157,20 @@ describe("buildThemeCSS", () => {
     expect(dataThemeIdx).toBeGreaterThan(lightEnd);
   });
 
+  it('"auto" → body[data-theme="light"] ルールを含む', () => {
+    expect(buildThemeCSS("auto")).toContain('body[data-theme="light"]');
+  });
+
+  it('"auto" → data-theme 未設定時のデフォルトとして :root が先頭に存在する', () => {
+    expect(buildThemeCSS("auto").trimStart()).toMatch(/^:root/);
+  });
+
+  it('"auto" → html[data-theme="dark"] ブロックの hljs セレクタが正しく変換されている', () => {
+    expect(buildThemeCSS("auto")).toContain(
+      'html[data-theme="dark"] .gce-container .hljs-keyword'
+    );
+  });
+
   it('不明な値 → LIGHT_COLORS にフォールバック', () => {
     expect(buildThemeCSS("unknown")).toBe(LIGHT_COLORS);
     expect(buildThemeCSS("")).toBe(LIGHT_COLORS);

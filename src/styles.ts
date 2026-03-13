@@ -99,22 +99,22 @@ export const DARK_COLORS = `
 `;
 
 function withDataTheme(colors: string, theme: "dark" | "light"): string {
-  const htmlSel = `html[data-theme="${theme}"]`;
-  const bodySel = `body[data-theme="${theme}"]`;
-  const htmlVersion = colors
-    .replace(/:root/g, htmlSel)
-    .replace(/\.gce-container/g, `${htmlSel} .gce-container`);
-  const bodyVersion = colors
-    .replace(/:root/g, bodySel)
-    .replace(/\.gce-container/g, `${bodySel} .gce-container`);
-  return `${htmlVersion}\n${bodyVersion}`;
+  function scopeToSelector(sel: string): string {
+    return colors
+      .replace(/:root/g, sel)
+      .replace(/\.gce-container/g, `${sel} .gce-container`);
+  }
+  return [
+    scopeToSelector(`html[data-theme="${theme}"]`),
+    scopeToSelector(`body[data-theme="${theme}"]`),
+  ].join("\n");
 }
 
 export function buildThemeCSS(theme: string): string {
   if (theme === "dark") return DARK_COLORS;
   if (theme === "auto") {
     return [
-      LIGHT_COLORS,
+      LIGHT_COLORS, // data-theme 未設定時のデフォルト（ライト）として :root に定義
       withDataTheme(DARK_COLORS, "dark"),
       withDataTheme(LIGHT_COLORS, "light"),
     ].join("\n");
