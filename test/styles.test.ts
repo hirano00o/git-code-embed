@@ -165,6 +165,14 @@ describe("buildThemeCSS", () => {
     expect(buildThemeCSS("auto")).toContain('body[data-theme="light"]');
   });
 
+  it('"auto" → body[data-theme="light"] ブロックにライト CSS 変数が含まれる', () => {
+    const css = buildThemeCSS("auto");
+    const start = css.indexOf('body[data-theme="light"]');
+    expect(start).toBeGreaterThan(-1);
+    expect(css.slice(start)).toContain("--gce-code-text: #24292f");
+    expect(css.slice(start)).not.toContain("--gce-code-text: #e6edf3");
+  });
+
   it('"auto" → data-theme 未設定時のデフォルトとして :root が先頭に存在する', () => {
     expect(buildThemeCSS("auto").trimStart()).toMatch(/^:root/);
   });
