@@ -97,22 +97,37 @@ https://github.com/owner/repo/blob/main/src/index.ts#L1-L10
 
 ## ダークモード
 
-デフォルトの `git-code-embed.min.js` は `prefers-color-scheme` メディアクエリで OS のテーマ設定に自動追従します。
-ライトモード固定・ダークモード固定のバンドルも用意しています。
+ブログのデザインに合わせて 3 種類のバンドルから選択できます。
 
-| ファイル | 挙動 |
-|---|---|
-| `git-code-embed.min.js` | OS のダーク/ライト設定に自動追従（推奨） |
-| `git-code-embed-light.min.js` | ライトモード固定 |
-| `git-code-embed-dark.min.js` | ダークモード固定 |
+| ファイル | 挙動 | 推奨用途 |
+|---|---|---|
+| `git-code-embed.min.js` | `data-theme` 属性によるテーマ切り替えに追従 | テーマ切り替え機能付きのブログ |
+| `git-code-embed-light.min.js` | ライトモード固定 | ライト固定デザインのブログ |
+| `git-code-embed-dark.min.js` | ダークモード固定 | ダーク固定デザインのブログ |
+
+### `git-code-embed.min.js`（data-theme 追従）の使い方
+
+`<html>` または `<body>` 要素に `data-theme="dark"` / `data-theme="light"` 属性が設定されると、
+コードビューのカラーテーマがそれに合わせて切り替わります。
+`data-theme` 属性が設定されていない場合はライトテーマが適用されます。
+
+```html
+<!-- data-theme 属性でテーマを切り替えるブログ向け -->
+<html data-theme="dark">
+  <!-- コードビューはダークテーマで表示される -->
+</html>
+```
+
+> **ライト固定・ダーク固定のブログには `-light.min.js` / `-dark.min.js` を使用してください。**
+> OS のダーク設定に関わらず、コードビューのテーマをブログに合わせて固定できます。
 
 ### はてなブログでの使い方
 
 管理画面の **設定 → 詳細設定** の `<head>` 要素欄に以下を貼り付けます。
-OS テーマに自動追従させる場合はデフォルトの URL をそのまま使用してください。
+ブログのデザインに合わせて使用するファイルを選択してください。
 
 ```html
-<!-- OS のダーク/ライト設定に自動追従（推奨） -->
+<!-- data-theme 属性でテーマ切り替えするブログ向け -->
 <script src="https://cdn.jsdelivr.net/gh/hirano00o/git-code-embed@v0/dist/git-code-embed.min.js" defer></script>
 
 <!-- ダークモード固定 -->
@@ -125,7 +140,7 @@ OS テーマに自動追従させる場合はデフォルトの URL をそのま
 ### ビルド
 
 ```bash
-# オートテーマ（デフォルト、OS のダーク/ライト設定に自動追従） → dist/git-code-embed.min.js
+# オートテーマ（data-theme 属性に追従） → dist/git-code-embed.min.js
 npm run build
 
 # ライトモード固定 → dist/git-code-embed-light.min.js

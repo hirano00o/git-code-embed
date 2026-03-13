@@ -98,10 +98,26 @@ export const DARK_COLORS = `
 .gce-container .hljs-doctag { color: #79c0ff; }
 `;
 
+function withDataTheme(colors: string, theme: "dark" | "light"): string {
+  function scopeToSelector(sel: string): string {
+    return colors
+      .replace(/:root/g, sel)
+      .replace(/\.gce-container/g, `${sel} .gce-container`);
+  }
+  return [
+    scopeToSelector(`html[data-theme="${theme}"]`),
+    scopeToSelector(`body[data-theme="${theme}"]`),
+  ].join("\n");
+}
+
 export function buildThemeCSS(theme: string): string {
   if (theme === "dark") return DARK_COLORS;
   if (theme === "auto") {
-    return `${LIGHT_COLORS}\n@media (prefers-color-scheme: dark) {\n${DARK_COLORS}\n}`;
+    return [
+      LIGHT_COLORS, // data-theme 未設定時のデフォルト（ライト）として :root に定義
+      withDataTheme(DARK_COLORS, "dark"),
+      withDataTheme(LIGHT_COLORS, "light"),
+    ].join("\n");
   }
   return LIGHT_COLORS;
 }
