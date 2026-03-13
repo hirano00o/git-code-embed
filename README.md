@@ -2,6 +2,8 @@
 
 GitHub blob URL を、シンタックスハイライト付きコードビューとしてページに埋め込むライブラリです。
 
+デモ: https://hirano00o.github.io/git-code-embed/
+
 ## 使い方
 
 `<script>` タグで読み込むと、ページ内の GitHub blob URL を持つ `<a>` タグを自動的に変換します。
