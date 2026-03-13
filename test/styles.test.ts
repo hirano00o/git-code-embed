@@ -120,26 +120,41 @@ describe("buildThemeCSS", () => {
     expect(buildThemeCSS("auto")).toContain(LIGHT_COLORS);
   });
 
-  it('"auto" → DARK_COLORS が @media (prefers-color-scheme: dark) で囲まれている', () => {
-    const css = buildThemeCSS("auto");
-    const mediaStart = css.indexOf("@media (prefers-color-scheme: dark)");
-    expect(mediaStart).toBeGreaterThan(-1);
-    // DARK_COLORS はメディアクエリブロック内に含まれる
-    const afterMedia = css.slice(mediaStart);
-    expect(afterMedia).toContain(DARK_COLORS);
+  it('"auto" → @media (prefers-color-scheme) ブロックを含まない', () => {
+    expect(buildThemeCSS("auto")).not.toContain("@media (prefers-color-scheme");
   });
 
-  it('"auto" → ダーク側の --gce-code-text が @media ブロック内に現れる', () => {
-    const css = buildThemeCSS("auto");
-    const mediaStart = css.indexOf("@media (prefers-color-scheme: dark)");
-    expect(mediaStart).toBeGreaterThan(-1);
-    const afterMedia = css.slice(mediaStart);
-    expect(afterMedia).toContain("--gce-code-text: #e6edf3");
+  it('"auto" → html[data-theme="dark"] ルールを含む', () => {
+    expect(buildThemeCSS("auto")).toContain('html[data-theme="dark"]');
   });
 
-  it('"auto" → LIGHT_COLORS が DARK_COLORS より前に現れる', () => {
+  it('"auto" → html[data-theme="dark"] ブロックにダーク CSS 変数が含まれる', () => {
     const css = buildThemeCSS("auto");
-    expect(css.indexOf(LIGHT_COLORS)).toBeLessThan(css.indexOf(DARK_COLORS));
+    const idx = css.indexOf('html[data-theme="dark"]');
+    expect(idx).toBeGreaterThan(-1);
+    expect(css.slice(idx)).toContain("--gce-code-text: #e6edf3");
+  });
+
+  it('"auto" → body[data-theme="dark"] ルールを含む', () => {
+    expect(buildThemeCSS("auto")).toContain('body[data-theme="dark"]');
+  });
+
+  it('"auto" → html[data-theme="light"] ルールを含む', () => {
+    expect(buildThemeCSS("auto")).toContain('html[data-theme="light"]');
+  });
+
+  it('"auto" → html[data-theme="light"] ブロックにライト CSS 変数が含まれる', () => {
+    const css = buildThemeCSS("auto");
+    const idx = css.lastIndexOf('html[data-theme="light"]');
+    expect(idx).toBeGreaterThan(-1);
+    expect(css.slice(idx)).toContain("--gce-code-text: #24292f");
+  });
+
+  it('"auto" → data-theme ルールが LIGHT_COLORS より後に現れる', () => {
+    const css = buildThemeCSS("auto");
+    const lightEnd = css.indexOf(LIGHT_COLORS) + LIGHT_COLORS.length;
+    const dataThemeIdx = css.indexOf('html[data-theme="dark"]');
+    expect(dataThemeIdx).toBeGreaterThan(lightEnd);
   });
 
   it('不明な値 → LIGHT_COLORS にフォールバック', () => {
