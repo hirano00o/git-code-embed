@@ -130,9 +130,11 @@ describe("buildThemeCSS", () => {
 
   it('"auto" → html[data-theme="dark"] ブロックにダーク CSS 変数が含まれる', () => {
     const css = buildThemeCSS("auto");
-    const idx = css.indexOf('html[data-theme="dark"]');
-    expect(idx).toBeGreaterThan(-1);
-    expect(css.slice(idx)).toContain("--gce-code-text: #e6edf3");
+    const start = css.indexOf('html[data-theme="dark"]');
+    const end = css.indexOf('body[data-theme="dark"]');
+    expect(start).toBeGreaterThan(-1);
+    expect(css.slice(start, end)).toContain("--gce-code-text: #e6edf3");
+    expect(css.slice(start, end)).not.toContain("--gce-code-text: #24292f");
   });
 
   it('"auto" → body[data-theme="dark"] ルールを含む', () => {
@@ -145,9 +147,11 @@ describe("buildThemeCSS", () => {
 
   it('"auto" → html[data-theme="light"] ブロックにライト CSS 変数が含まれる', () => {
     const css = buildThemeCSS("auto");
-    const idx = css.lastIndexOf('html[data-theme="light"]');
-    expect(idx).toBeGreaterThan(-1);
-    expect(css.slice(idx)).toContain("--gce-code-text: #24292f");
+    const start = css.indexOf('html[data-theme="light"]');
+    const end = css.indexOf('body[data-theme="light"]');
+    expect(start).toBeGreaterThan(-1);
+    expect(css.slice(start, end)).toContain("--gce-code-text: #24292f");
+    expect(css.slice(start, end)).not.toContain("--gce-code-text: #e6edf3");
   });
 
   it('"auto" → data-theme ルールが LIGHT_COLORS より後に現れる', () => {
@@ -169,6 +173,19 @@ describe("buildThemeCSS", () => {
     expect(buildThemeCSS("auto")).toContain(
       'html[data-theme="dark"] .gce-container .hljs-keyword'
     );
+  });
+
+  it('"auto" → LIGHT_COLORS 以降に :root が残存しない', () => {
+    const css = buildThemeCSS("auto");
+    expect(css.slice(LIGHT_COLORS.length)).not.toContain(":root");
+  });
+
+  it('"auto" → body[data-theme="dark"] ブロックにダーク CSS 変数が含まれる', () => {
+    const css = buildThemeCSS("auto");
+    const start = css.indexOf('body[data-theme="dark"]');
+    const end = css.indexOf('html[data-theme="light"]');
+    expect(start).toBeGreaterThan(-1);
+    expect(css.slice(start, end)).toContain("--gce-code-text: #e6edf3");
   });
 
   it('不明な値 → LIGHT_COLORS にフォールバック', () => {
